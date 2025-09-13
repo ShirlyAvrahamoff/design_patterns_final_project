@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Fri Sep 12 01:45:08 IDT 2025:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0199-3af4-3971-00000e6f4768 
+on database directory C:\Users\user\OneDrive\שולחן העבודה\design_patterns_final_project\design_patterns_final_project\out\artifacts\design_patterns_final_project_jar\tasksdb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@11a4022a 
+Loaded from file:/C:/Users/user/OneDrive/%d7%a9%d7%95%d7%9c%d7%97%d7%9f%20%d7%94%d7%a2%d7%91%d7%95%d7%93%d7%94/design_patterns_final_project/design_patterns_final_project/out/artifacts/design_patterns_final_project_jar/design_patterns_final_project.jar
+java.vendor=Oracle Corporation
+java.runtime.version=24.0.2+12-54
+user.dir=C:\Users\user\OneDrive\שולחן העבודה\design_patterns_final_project\design_patterns_final_project\out\artifacts\design_patterns_final_project_jar
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

@@ -139,7 +139,6 @@ public class TasksPanel extends JPanel {
 
     /** Row 1: Task fields + CRUD buttons (Add/Update/Delete/Delete All/Clear). */
     private JComponent buildRow1FieldsAndCrud() {
-        // Build content on a transparent panel; wrapper will add padding and title.
         JPanel content = new JPanel(new GridBagLayout());
         content.setOpaque(false);
 
@@ -260,7 +259,6 @@ public class TasksPanel extends JPanel {
 
         clearBtn.addActionListener(e -> clearForm());
 
-        // Wrap with a clean titled section (no background color; just padding).
         return wrapTitledSection("Task", content);
     }
 
@@ -294,7 +292,6 @@ public class TasksPanel extends JPanel {
             if (f != null) doSafe(() -> vm.setFilter(f));
         });
 
-        // Helper: label + field
         java.util.function.BiFunction<String, JComponent, JPanel> pair = (txt, comp) -> {
             JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
             p.setOpaque(false);
@@ -391,7 +388,7 @@ public class TasksPanel extends JPanel {
         csv.addActionListener(e -> doSafe(() -> save(vm.buildCsvReport(), "tasks.csv")));
         json.addActionListener(e -> doSafe(() -> save(vm.buildJsonReport(), "tasks.json")));
 
-        // Simple stats popup
+        // stats popup
         stats.addActionListener(e -> doSafe(() ->
                 JOptionPane.showMessageDialog(this, vm.buildStateStats(),
                         "State Stats", JOptionPane.INFORMATION_MESSAGE)));

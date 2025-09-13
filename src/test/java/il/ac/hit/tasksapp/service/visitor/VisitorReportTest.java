@@ -61,7 +61,6 @@ public class VisitorReportTest {
         StatsVisitor stats = new StatsVisitor();
         records.forEach(stats::visit);
         String statsOut = extractOutput(stats);
-        // accept formats like "TO_DO: 1" or "TO_DO = 1" etc.
         assertTrue(containsCount(statsOut, "TO_DO", 1), "Stats must show TO_DO: 1");
         assertTrue(containsCount(statsOut, "IN_PROGRESS", 1), "Stats must show IN_PROGRESS: 1");
         assertTrue(containsCount(statsOut, "COMPLETED", 1), "Stats must show COMPLETED: 1");
@@ -76,7 +75,7 @@ public class VisitorReportTest {
                 if (m.getReturnType() == String.class) {
                     return (String) m.invoke(visitor);
                 }
-            } catch (Exception ignore) { /* try next */ }
+            } catch (Exception ignore) { }
         }
         return visitor.toString();
     }

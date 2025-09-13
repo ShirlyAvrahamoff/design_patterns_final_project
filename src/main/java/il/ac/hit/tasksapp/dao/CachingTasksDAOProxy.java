@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CachingTasksDAOProxy implements ITasksDAO {
 
     private final ITasksDAO real;
-    private volatile ITask[] tasksCache;              // cache for list
+    private volatile ITask[] tasksCache;
     private final Map<Integer, ITask> taskByIdCache = new ConcurrentHashMap<>();
 
     public CachingTasksDAOProxy(ITasksDAO real) {

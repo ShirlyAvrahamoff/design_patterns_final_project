@@ -31,7 +31,6 @@ public final class DerbyConnectionManager {
     /** Open one shared connection and ensure schema exists. */
     public synchronized Connection getConnection() throws SQLException {
         if (conn == null || conn.isClosed()) {
-            // Make sure directory exists so Derby can create files.
             new File(DB_DIR).mkdirs();
             conn = DriverManager.getConnection(URL);
             initSchema(conn);

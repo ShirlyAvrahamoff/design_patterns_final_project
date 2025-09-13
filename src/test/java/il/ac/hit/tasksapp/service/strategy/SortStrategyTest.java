@@ -121,7 +121,7 @@ public class SortStrategyTest {
             return copy;
         }
 
-        // If nothing worked, return original so שהבדיקה תיכשל עם דיאגנוסטיקה טובה
+        // If nothing worked, return original
         return new ArrayList<>(original);
     }
 

@@ -13,7 +13,6 @@ public class StatsVisitor implements TaskVisitor {
     private final Map<TaskState, Integer> counts = new EnumMap<>(TaskState.class);
 
     @Override public void visit(TaskRecord t) {
-        // Pattern matching on record components
         switch (t) {
             case TaskRecord(int id, String title, String desc, TaskState st) -> {
                 counts.merge(st, 1, Integer::sum);

@@ -40,7 +40,6 @@ public class TasksViewModel {
     public TasksViewModel() throws TasksDAOException {
         this.dao = TasksDAOImpl.getInstance();   // Singleton accessor
         refresh();
-        // let the UI show initial filter text
         pcs.firePropertyChange("filter", null, getFilterDescription());
     }
 

@@ -168,7 +168,7 @@ public final class AdvancedFilterDialog extends JDialog {
             int to   = (hi == null ? Integer.MAX_VALUE : hi);
             if (from > to) throw new IllegalArgumentException("ID range is invalid (from > to).");
             TaskFilter t = TaskFilter.byIdBetween(from, to);
-            if (notId.isSelected()) t = t.not();      // <-- NOT for ID range
+            if (notId.isSelected()) t = t.not();
             parts.add(t);
         }
 
@@ -209,7 +209,6 @@ public final class AdvancedFilterDialog extends JDialog {
 
     /**
      * Shows the dialog and returns the composed TaskFilter, or null if cancelled.
-     * This signature matches what נקרא מתוך TasksPanel.
      */
     public static TaskFilter showDialog(Window owner) {
         AdvancedFilterDialog d = new AdvancedFilterDialog(owner);

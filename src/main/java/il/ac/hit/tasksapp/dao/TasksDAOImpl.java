@@ -27,7 +27,7 @@ public final class TasksDAOImpl implements ITasksDAO {
     /** Private ctor (Singleton). */
     private TasksDAOImpl() {
         try {
-            try { Class.forName("org.apache.derby.jdbc.EmbeddedDriver"); } catch (ClassNotFoundException ignore) { /* not required */ }
+            try { Class.forName("org.apache.derby.jdbc.EmbeddedDriver"); } catch (ClassNotFoundException ignore) { }
 
             conn = DriverManager.getConnection("jdbc:derby:tasksdb;create=true");
             createTableIfMissing();
@@ -60,7 +60,6 @@ public final class TasksDAOImpl implements ITasksDAO {
 
     @Override
     public synchronized ITask[] getTasks() throws TasksDAOException {
-        // serve from cache if present
         if (allCache != null) return allCache.toArray(new ITask[0]);
 
         final String sql = "select id, title, description, state from tasks order by id";
@@ -71,7 +70,7 @@ public final class TasksDAOImpl implements ITasksDAO {
             while (rs.next()) {
                 ITask t = map(rs);
                 list.add(t);
-                byIdCache.put(t.getId(), t); // warm id cache
+                byIdCache.put(t.getId(), t);
             }
             allCache = List.copyOf(list);
             return allCache.toArray(new ITask[0]);
