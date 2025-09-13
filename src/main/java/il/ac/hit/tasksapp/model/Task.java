@@ -46,13 +46,6 @@ public class Task implements ITask {
         this.state = state;
     }
 
-    /** Visitor bridge: wrap values in a record and forward. */
-    @Override
-    public void accept(il.ac.hit.tasksapp.model.visitor.TaskVisitor v) {
-        var rec = new il.ac.hit.tasksapp.model.record.TaskRecord(id, title, description, state);
-        v.visit(rec);
-    }
-
     @Override public boolean equals(Object o) { return (o instanceof Task t) && t.id == id; }
     @Override public int hashCode() { return Integer.hashCode(id); }
     @Override public String toString() { return "Task{id=" + id + ", title='" + title + "', state=" + state + "}"; }

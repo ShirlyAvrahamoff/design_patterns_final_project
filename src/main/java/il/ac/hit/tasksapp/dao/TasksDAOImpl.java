@@ -5,31 +5,26 @@ import il.ac.hit.tasksapp.model.Task;
 import il.ac.hit.tasksapp.model.state.TaskState;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Derby embedded DAO.
- * - Singleton: getInstance()
- * - Proxy/Cache: memoizes getTask(id) and last full list.
+ * Derby embedded DAO (Singleton).
+ * NOTE: No in-memory caching here; caching is delegated to CachingTasksDAOProxy.
  */
 public final class TasksDAOImpl implements ITasksDAO {
 
-    /** Singleton holder. */
+    /** Singleton holder (eager). */
     private static final TasksDAOImpl INSTANCE = new TasksDAOImpl();
 
     /** Derby connection (embedded). */
     private final Connection conn;
 
-    /** Simple in-memory caches (Proxy). */
-    private final Map<Integer, ITask> byIdCache = new HashMap<>();
-    private List<ITask> allCache = null;
-
     /** Private ctor (Singleton). */
     private TasksDAOImpl() {
         try {
             try { Class.forName("org.apache.derby.jdbc.EmbeddedDriver"); } catch (ClassNotFoundException ignore) { }
-
-            conn = DriverManager.getConnection("jdbc:derby:tasksdb;create=true");
+            this.conn = DriverManager.getConnection("jdbc:derby:tasksdb;create=true");
             createTableIfMissing();
         } catch (SQLException e) {
             throw new RuntimeException("Derby init failed", e);
@@ -52,6 +47,7 @@ public final class TasksDAOImpl implements ITasksDAO {
         try (Statement st = conn.createStatement()) {
             st.executeUpdate(ddl);
         } catch (SQLException e) {
+            // X0Y32 = Table/View already exists
             if (!"X0Y32".equals(e.getSQLState())) throw e;
         }
     }
@@ -60,20 +56,12 @@ public final class TasksDAOImpl implements ITasksDAO {
 
     @Override
     public synchronized ITask[] getTasks() throws TasksDAOException {
-        if (allCache != null) return allCache.toArray(new ITask[0]);
-
         final String sql = "select id, title, description, state from tasks order by id";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             List<ITask> list = new ArrayList<>();
-            while (rs.next()) {
-                ITask t = map(rs);
-                list.add(t);
-                byIdCache.put(t.getId(), t);
-            }
-            allCache = List.copyOf(list);
-            return allCache.toArray(new ITask[0]);
+            while (rs.next()) list.add(map(rs));
+            return list.toArray(new ITask[0]);
         } catch (SQLException e) {
             throw new TasksDAOException("getTasks failed", e);
         }
@@ -81,17 +69,12 @@ public final class TasksDAOImpl implements ITasksDAO {
 
     @Override
     public synchronized ITask getTask(int id) throws TasksDAOException {
-        ITask cached = byIdCache.get(id);
-        if (cached != null) return cached;
-
         final String sql = "select id, title, description, state from tasks where id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
-                ITask t = map(rs);
-                byIdCache.put(id, t);
-                return t;
+                return map(rs);
             }
         } catch (SQLException e) {
             throw new TasksDAOException("getTask failed for id=" + id, e);
@@ -107,7 +90,6 @@ public final class TasksDAOImpl implements ITasksDAO {
             ps.setString(3, task.getDescription());
             ps.setString(4, task.getState().name());
             ps.executeUpdate();
-            invalidate(task.getId());
         } catch (SQLException e) {
             throw new TasksDAOException("addTask failed for id=" + task.getId(), e);
         }
@@ -122,7 +104,6 @@ public final class TasksDAOImpl implements ITasksDAO {
             ps.setString(3, task.getState().name());
             ps.setInt(4, task.getId());
             ps.executeUpdate();
-            invalidate(task.getId());
         } catch (SQLException e) {
             throw new TasksDAOException("updateTask failed for id=" + task.getId(), e);
         }
@@ -132,7 +113,6 @@ public final class TasksDAOImpl implements ITasksDAO {
     public synchronized void deleteTasks() throws TasksDAOException {
         try (Statement st = conn.createStatement()) {
             st.executeUpdate("delete from tasks");
-            invalidate(null);
         } catch (SQLException e) {
             throw new TasksDAOException("deleteTasks failed", e);
         }
@@ -144,7 +124,6 @@ public final class TasksDAOImpl implements ITasksDAO {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
-            invalidate(id);
         } catch (SQLException e) {
             throw new TasksDAOException("deleteTask failed for id=" + id, e);
         }
@@ -158,11 +137,5 @@ public final class TasksDAOImpl implements ITasksDAO {
         String description = rs.getString("description");
         TaskState state = TaskState.valueOf(rs.getString("state"));
         return new Task(id, title, description, state);
-    }
-
-    /** Invalidate caches after any write. */
-    private void invalidate(Integer id) {
-        allCache = null;
-        if (id != null) byIdCache.remove(id);
     }
 }
