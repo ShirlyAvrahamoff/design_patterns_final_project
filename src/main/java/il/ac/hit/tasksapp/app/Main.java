@@ -1,3 +1,4 @@
+
 package il.ac.hit.tasksapp.app;
 
 import il.ac.hit.tasksapp.view.TasksPanel;
@@ -9,7 +10,6 @@ import javax.swing.*;
 public final class Main {
     private Main() {}
 
-    /** Boot on the EDT; try Nimbus for a cleaner look. */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {

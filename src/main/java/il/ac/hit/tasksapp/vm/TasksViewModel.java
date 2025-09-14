@@ -1,5 +1,6 @@
 package il.ac.hit.tasksapp.vm;
 
+import il.ac.hit.tasksapp.dao.CachingTasksDAOProxy;
 import il.ac.hit.tasksapp.dao.ITasksDAO;
 import il.ac.hit.tasksapp.dao.TasksDAOException;
 import il.ac.hit.tasksapp.dao.TasksDAOImpl;
@@ -32,7 +33,8 @@ public class TasksViewModel {
     private TaskFilter filter = TaskFilter.any();
 
     public TasksViewModel() throws TasksDAOException {
-        this.dao = TasksDAOImpl.getInstance(); // keep as-is; composition can wrap with proxy elsewhere
+        // Wrap the singleton DAO with the Proxy so caching is active at runtime.
+        this.dao = new CachingTasksDAOProxy(TasksDAOImpl.getInstance());
         refresh();
         pcs.firePropertyChange("filter", null, getFilterDescription());
     }
