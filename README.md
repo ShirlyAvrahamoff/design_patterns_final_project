@@ -20,21 +20,19 @@ The project demonstrates how multiple design patterns can be applied in a real-w
 ## Screenshots
 
 ### Main Interface
-![Main screen](Screenshots/main-screen.png)
-
+![main screen.png](Screenshots/main%20screen.png)
 The main window allows managing tasks, filtering, sorting, and exporting.
 
 ---
 
 ### Advanced Filter
-![Advanced filter](Screenshots/advanced-filter.png)
-
+![advanved filter.png](Screenshots/advanved%20filter.png)
 An advanced filtering system where users can combine multiple conditions with **AND/OR** logic.
 
 ---
 
 ### Statistics
-![State popup](Screenshots/state-popup.png)
+![state popup.png](Screenshots/state%20popup.png)
 
 A popup window displaying the total number of tasks and distribution by state.
 
